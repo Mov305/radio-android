@@ -1,26 +1,47 @@
 import React from 'react';
-import { Images } from '../../Constants';
+import { Colors, Images } from '../../Constants';
 import { Mview, Mtext } from '../../util';
 import { StatusBar, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
+import { LittersFadeIn } from '../../util/animation';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Onboarding({ navigation }) {
+  const IsFocused = useIsFocused();
+  const { mainDark, mainLight, textDark, textLight } = Colors;
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      navigation.navigate('Home');
+    }, 2000);
+  }, [IsFocused]);
+
   return (
-    <Mview class="bg-[#1A0938] flex-1 items-center justify-around">
+    <Mview class={'flex-1 items-center justify-around '} dark={mainDark}>
       <StatusBar barStyle={'light-content'} />
       <Mview class=" items-center justify-center">
-        <Image source={Images.Logo} style={{ width: 150, height: 140 }} />
+        <Image
+          source={Images.radioScoop}
+          style={{ width: 150, height: 140 }}
+          className="rounded-full"
+        />
 
-        <Mtext class="text-3xl text-[#ED1BA3]  mt-5 font-semibold">Radio Scoop</Mtext>
-        <Mtext class="text-[#d3d3db] text-lg px-4 mt-3 font-semibold text-center">
+        <Mview class="text-3xl mt-5 flex flex-row font-semibold ">
+          {'Radio Scoop'.split('').map((letter, index) => (
+            <LittersFadeIn key={index} order={index}>
+              <Mtext class="text-3xl font-semibold " dark={textDark}>
+                {letter}
+              </Mtext>
+            </LittersFadeIn>
+          ))}
+        </Mview>
+        <Mtext class="text-slate-400 text-lg px-4  font-semibold text-center mt-8">
           راديو سكووب : اول راديو اون لاين في مصر بينقل المميزين من متدربيه الى الاذاعات ال FM
           الكبرى
         </Mtext>
       </Mview>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Library')}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <Mview class="items-center justify-center relative scale-125">
           <LinearGradient
             colors={LgStyle.colors}

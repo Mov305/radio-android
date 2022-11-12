@@ -1,9 +1,9 @@
 // import Fonts from './Fonts';
 import Images from './Images';
-// import category from './mocks';
+import Colors from './colors';
 
 export {
   //  Fonts,
   Images,
-  //   category
+  Colors,
 };

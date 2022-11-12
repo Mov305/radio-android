@@ -9,8 +9,8 @@ const Replay = require('../../assets/images/Arrows/Replay.png');
 const right = require('../../assets/images/Arrows/right.png');
 const up = require('../../assets/images/Arrows/up.png');
 const heart = require('../../assets/images/icon/action/heart.png');
-const radioScoop = require('../../assets/favicon.png');
-
+const radioScoop = require('../../assets/icon.png');
+const radioLogo = require('../../assets/radio-logo.png');
 export default {
   Elipse,
   Logo,
@@ -24,4 +24,5 @@ export default {
   up,
   heart,
   radioScoop,
+  radioLogo
 };
