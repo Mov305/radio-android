@@ -13,9 +13,9 @@ export default function StateContext(props) {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [playedEp, setPlayedEp] = React.useState();
 
-  const playSound = async () => {
+  const playSound = async (Link) => {
     const { sound } = await Audio.Sound.createAsync(
-      { uri: playedEp ? playedEp.link : 'https://mystation.micast.media/radio/8190/radio.mp3' },
+      { uri: Link ? Link : 'https://mystation.micast.media/radio/8190/radio.mp3' },
       { shouldPlay: true },
     );
     setIsPlaying(true);
@@ -28,7 +28,6 @@ export default function StateContext(props) {
       await sound.unloadAsync();
       setIsPlaying(false);
     }
-    setPlayedEp(null);
   };
 
   const pauseSound = async () => {
@@ -41,12 +40,6 @@ export default function StateContext(props) {
     await sound.playAsync();
   };
 
-  const playEpisode = async (episode) => {
-    await stopSound();
-    setPlayedEp(episode);
-    await playSound();
-  };
-
   const context = {
     dark,
     toggleTheme,
@@ -55,8 +48,9 @@ export default function StateContext(props) {
     stopSound,
     pauseSound,
     resumeSound,
-    playEpisode,
     playedEp,
+    sound,
+    setPlayedEp,
   };
 
   return <ThemeContext.Provider value={context}>{props.children}</ThemeContext.Provider>;

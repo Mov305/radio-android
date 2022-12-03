@@ -31,7 +31,7 @@ export default function Player({ navigation, route }) {
           <Image source={Images.radioLogo} style={{ width: 60, height: 50 }} />
         </Mview>
       </Mview>
-      <Main data={data} />
+      <Main data={data} navigation={navigation} />
     </Mview>
   );
 }

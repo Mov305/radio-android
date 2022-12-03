@@ -5,54 +5,63 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import { AntDesign } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
+import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext } from '../../lib/stateContext';
 
-export default function Main({ data }) {
+export default function Main({ data, navigation }) {
   const { title, img, author, category, link } = data;
-  const [sound, setSound] = useState(new Audio.Sound());
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentPosition, setCurrentPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
+  // const [sound, setSound] = useState(new Audio.Sound());
+  // const [isPlaying, setIsPlaying] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState(1);
+  const [duration, setDuration] = useState(1);
+  const [loaded, setLoaded] = useState(false);
+  const Focused = useIsFocused();
+
+  const { isPlaying, playSound, stopSound, pauseSound, resumeSound, sound, setPlayedEp } =
+    React.useContext(ThemeContext);
 
   useEffect(() => {
-    (async () => {
-      await sound.loadAsync({ uri: link });
-      // get the sound duration
-
-      const { durationMillis } = await sound.getStatusAsync();
-      setDuration(durationMillis);
-
-      sound.setOnPlaybackStatusUpdate((status) => {
-        setCurrentPosition(status.positionMillis);
+    const startup = async () => {
+      Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+        staysActiveInBackground: true,
+        interruptionModeAndroid: 1,
+        interruptionModeIOS: 1,
       });
-    })();
-  }, [sound]);
-
-  const playSound = async () => {
-    await sound.playAsync();
-    setIsPlaying(true);
-  };
-
-  const pauseSound = async () => {
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  };
-
-  // check if the sound is loaded
-
-  // clean up sound
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  // handle slider change
+      try {
+        await stopSound();
+        await playSound(link);
+        setLoaded(false);
+      } catch (e) {
+        console.log(e);
+      }
+      // when sound is loaded set duration
+    };
+    if (Focused) {
+      startup();
+    }
+  }, [Focused]);
 
   const handleSliderChange = async (value) => {
-    await sound.setPositionAsync(value);
+    if (sound._loaded) {
+      await sound.setPositionAsync(value);
+    }
+  };
+
+  const getData = async () => {
+    if (!loaded) {
+      await sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded) {
+          setDuration(status.durationMillis);
+          setCurrentPosition(status.positionMillis);
+        }
+      });
+
+      setLoaded(true);
+    }
   };
 
   return (
@@ -85,7 +94,8 @@ export default function Main({ data }) {
                   pauseSound();
                 }
               : () => {
-                  sound._loaded ? playSound() : Alert.alert(' الرجاء الانتظار لحين تحميل الصوت');
+                  sound._loaded ? resumeSound() : Alert.alert(' الرجاء الانتظار لحين تحميل الصوت');
+                  getData();
                 }
           }
         >
@@ -120,28 +130,32 @@ export default function Main({ data }) {
             </Mview>
           </Mview>
         </TouchableOpacity>
-        <Slider
-          style={{ width: 300, height: 40 }}
-          minimumValue={0}
-          maximumValue={1}
-          value={duration ? currentPosition / duration : 0}
-          minimumTrackTintColor="#FFFFFF"
-          maximumTrackTintColor="#000000"
-          onSlidingComplete={
-            sound._loaded &&
-            ((value) => {
-              handleSliderChange(value * duration);
-            })
-          }
-        />
-        <Mview class="">
-          {duration > 0 && (
-            <Mtext class="text-base  text-slate-300  mt-4 font-semibold">
-              {Math.floor(currentPosition / 60000)}:{Math.floor((currentPosition / 1000) % 60)} /{' '}
-              {Math.floor(duration / 60000)}:{Math.floor((duration / 1000) % 60)}
-            </Mtext>
-          )}
-        </Mview>
+        {loaded && (
+          <Slider
+            style={{ width: 300, height: 40 }}
+            minimumValue={0}
+            maximumValue={1}
+            value={duration ? currentPosition / duration : 0}
+            minimumTrackTintColor="#FFFFFF"
+            maximumTrackTintColor="#000000"
+            onSlidingComplete={
+              sound._loaded &&
+              ((value) => {
+                handleSliderChange(value * duration);
+              })
+            }
+          />
+        )}
+        {loaded && (
+          <Mview class="">
+            {duration > 0 && (
+              <Mtext class="text-base  text-slate-300  mt-4 font-semibold">
+                {Math.floor(currentPosition / 60000)}:{Math.floor((currentPosition / 1000) % 60)} /{' '}
+                {Math.floor(duration / 60000)}:{Math.floor((duration / 1000) % 60)}
+              </Mtext>
+            )}
+          </Mview>
+        )}
       </Mview>
     </Mview>
   );
