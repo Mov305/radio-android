@@ -8,6 +8,7 @@ import { ThemeContext } from '../../lib/stateContext';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors, Images } from '../../Constants';
 import { Fadeinout } from '../../util/animation';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Home({ navigation }) {
   const IsFocused = useIsFocused();
@@ -34,6 +35,8 @@ export default function Home({ navigation }) {
 
   return (
     <Mview class="flex flex-1 w-full" dark={mainDark}>
+      <StatusBar backgroundColor={'black'} hidden={true} translucent />
+
       <Mview class=" w-full h-12 flex flex-row items-center px-2 " dark={mainDarkLight}>
         {/* menu */}
         <TouchableOpacity>
@@ -121,6 +124,41 @@ export default function Home({ navigation }) {
                 <AntDesign name="playcircleo" size={24} color="white" />
               )}
             </Mview>
+          </Mview>
+        </TouchableOpacity>
+      </Mview>
+
+      <Mview class="flex flex-row justify-around items-center mt-5 bg-slate-300/5 w-full h-16">
+        {/* navigate to library */}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Library');
+          }}
+        >
+          <Mview class="flex flex-col items-center justify-center">
+            <Ionicons name="md-musical-notes-outline" size={24} color="white" />
+            <Mtext
+              class="text-white
+            text-xs font-semibold"
+            >
+              احدث الحلقات
+            </Mtext>
+          </Mview>
+        </TouchableOpacity>
+        {/* navigate to Categories */}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Categories');
+          }}
+        >
+          <Mview class="flex flex-col items-center justify-center">
+            <Ionicons name="md-list-outline" size={24} color="white" />
+            <Mtext
+              class="text-white
+            text-xs font-semibold"
+            >
+              قائمة البرامج
+            </Mtext>
           </Mview>
         </TouchableOpacity>
       </Mview>

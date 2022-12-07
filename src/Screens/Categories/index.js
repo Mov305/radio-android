@@ -5,8 +5,8 @@ import { Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Colors } from '../../Constants';
 import { ThemeContext } from '../../lib/stateContext';
 import { useIsFocused } from '@react-navigation/native';
-import { FlatList } from 'react-native-gesture-handler';
 import CatCard from '../Library/catCard';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Categories({ navigation }) {
   const { stopSound } = React.useContext(ThemeContext);
@@ -33,6 +33,7 @@ export default function Categories({ navigation }) {
   const { mainDark, mainLight, textDark } = Colors;
   return (
     <Mview class="flex-1" dark={mainDark}>
+      <StatusBar backgroundColor={'black'} hidden={true} translucent />
       <Mview class="flex flex-row justify-between py-1 px-3 items-center shadow-md ">
         <TouchableOpacity
           onPress={() => {

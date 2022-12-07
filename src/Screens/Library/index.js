@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Mview } from '../../util';
-import { StatusBar, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import {TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Search from './search';
 import PlayList from './playlist';
 import Episodes from './ep';
@@ -43,7 +43,6 @@ export default function Library({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Mview class="flex-1 " dark={mainDark}>
-        <StatusBar barStyle={'light-content'} />
         <Search navigation={navigation} handleSearch={fetchData} />
         <ScrollView>
           <PlayList data={cat} navigation={navigation} />
